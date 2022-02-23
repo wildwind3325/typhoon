@@ -1,9 +1,12 @@
 import Vue from 'vue';
 import App from './App';
+import VueI18n from 'vue-i18n';
 import router from './router';
 import axios from 'axios';
 import './api/enhance';
 import ViewUI from 'view-design';
+import en from 'view-design/dist/locale/en-US';
+import zh from 'view-design/dist/locale/zh-CN';
 import 'view-design/dist/styles/iview.css';
 import './main.css';
 
@@ -29,10 +32,21 @@ axios.interceptors.response.use(function (response) {
 });
 
 Vue.config.productionTip = false;
-Vue.use(ViewUI);
 Vue.prototype.$http = axios;
+Vue.use(VueI18n);
+Vue.use(ViewUI);
+Vue.locale = () => { };
+
+let i18n = new VueI18n({
+  locale: 'zh',
+  messages: {
+    en: Object.assign({ message: 'hello' }, en),
+    zh: Object.assign({ message: '你好' }, zh)
+  }
+});
 
 new Vue({
   router,
+  i18n,
   render: h => h(App)
 }).$mount('#app');
