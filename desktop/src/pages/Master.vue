@@ -9,7 +9,10 @@
               <Icon type="ios-navigate"></Icon>
               Item 1
             </template>
-            <MenuItem name="1-1">Option 1</MenuItem>
+            <MenuItem name="1-1">
+            <Icon type="md-document" />
+            Option 1
+            </MenuItem>
             <MenuItem name="1-2">Option 2</MenuItem>
             <MenuItem name="1-3">Option 3</MenuItem>
           </Submenu>
@@ -45,7 +48,7 @@
       <div class="header">
         <Breadcrumb>
           <BreadcrumbItem to="/">
-            <Icon type="ios-home-outline"></Icon> Home
+            <Icon type="ios-home"></Icon> Home
           </BreadcrumbItem>
           <BreadcrumbItem to="/components/breadcrumb">
             <Icon type="logo-buffer"></Icon> Components
@@ -60,19 +63,16 @@
             <Icon type="ios-arrow-down"></Icon>
           </a>
           <DropdownMenu slot="list">
-            <DropdownItem>驴打滚</DropdownItem>
-            <DropdownItem>炸酱面</DropdownItem>
-            <DropdownItem>豆汁儿</DropdownItem>
-            <DropdownItem>冰糖葫芦</DropdownItem>
-            <DropdownItem>北京烤鸭</DropdownItem>
+            <DropdownItem>个人信息</DropdownItem>
+            <DropdownItem>注销</DropdownItem>
           </DropdownMenu>
         </Dropdown>
       </div>
       <div class="body-content">
         <Tabs type="card" closable :animated="false">
-          <TabPane label="标签一">
+          <TabPane icon="ios-home" label="首页" :closable="false">
             <vue-custom-scrollbar class="tab-content">
-              <div>标签一的内容</div>
+              <div>首页</div>
             </vue-custom-scrollbar>
           </TabPane>
           <TabPane label="标签二">
