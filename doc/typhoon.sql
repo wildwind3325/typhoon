@@ -91,6 +91,7 @@ CREATE TABLE `base_auth_page` (
   `order` int(11) NOT NULL,
   `icon` varchar(32) COLLATE utf8mb4_bin NOT NULL,
   `visible` int(11) NOT NULL,
+  `is_singleton` int(11) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_by` varchar(32) COLLATE utf8mb4_bin NOT NULL,
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -525,4 +526,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-03-04 18:05:23
+-- Dump completed on 2022-03-04 19:45:50

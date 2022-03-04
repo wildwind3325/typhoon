@@ -3,7 +3,7 @@
     <Sider :width="240">
       <div style="height: 64px;"></div>
       <vue-custom-scrollbar class="menu-content">
-        <Menu active-name="1-2" theme="dark" width="240px">
+        <Menu active-name="1-2" theme="dark" width="240px" @on-select="selectMenu">
           <Submenu name="1">
             <template slot="title">
               <Icon type="ios-navigate"></Icon>
@@ -47,14 +47,8 @@
     <Content>
       <div class="header">
         <Breadcrumb>
-          <BreadcrumbItem to="/">
-            <Icon type="ios-home"></Icon> Home
-          </BreadcrumbItem>
-          <BreadcrumbItem to="/components/breadcrumb">
-            <Icon type="logo-buffer"></Icon> Components
-          </BreadcrumbItem>
           <BreadcrumbItem>
-            <Icon type="ios-cafe"></Icon> Breadcrumb
+            <Icon type="ios-home"></Icon> 首页
           </BreadcrumbItem>
         </Breadcrumb>
         <Dropdown style="margin-left: 20px" placement="bottom-end">
@@ -69,20 +63,12 @@
         </Dropdown>
       </div>
       <div class="body-content">
-        <Tabs type="card" closable :animated="false">
-          <TabPane icon="ios-home" label="首页" :closable="false">
+        <Tabs v-model="activeTab" type="card" :animated="false" @on-tab-remove="closeTab">
+          <TabPane v-for="(item, index) in tabs" :key="index" :label="item.lable" :icon="item.icon"
+            :closable="index > 0">
             <vue-custom-scrollbar class="tab-content">
-              <div>首页</div>
-            </vue-custom-scrollbar>
-          </TabPane>
-          <TabPane label="标签二">
-            <vue-custom-scrollbar class="tab-content">
-              <div>标签二的内容</div>
-            </vue-custom-scrollbar>
-          </TabPane>
-          <TabPane label="标签三">
-            <vue-custom-scrollbar class="tab-content">
-              <div>标签三的内容</div>
+              <component :is="comps[item.code]" :actived="index ===  activeTab">
+              </component>
             </vue-custom-scrollbar>
           </TabPane>
         </Tabs>
@@ -99,10 +85,33 @@ export default {
   name: 'Master',
   data() {
     return {
-      tabIndex: 0
+      activeTab: 0,
+      tabs: [{
+        lable: '首页',
+        icon: 'ios-home',
+        code: 'Home',
+        options: {}
+      }],
+      comps: {
+        'Home': () => import('./Home')
+      }
     };
   },
   methods: {
+    selectMenu(name) {
+      if (!this.comps['C1']) {
+        this.comps['C1'] = () => import('./C1');
+      }
+      this.tabs.push({
+        lable: 'C1',
+        icon: 'logo-android',
+        code: 'C1',
+        options: {}
+      });
+    },
+    closeTab(index) {
+      this.tabs.splice(index, 1);
+    }
   }
 };
 </script>
