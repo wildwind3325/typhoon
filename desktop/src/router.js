@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Login from './pages/Login';
-import Home from './pages/Home';
+import Master from './pages/Master';
 import NotFound from './pages/NotFound';
 
 Vue.use(VueRouter);
@@ -13,7 +13,7 @@ const router = new VueRouter({
     component: Login
   }, {
     path: '/home',
-    component: Home
+    component: Master
   }, {
     path: '*',
     component: NotFound

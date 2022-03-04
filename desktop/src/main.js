@@ -5,9 +5,13 @@ import router from './router';
 import axios from 'axios';
 import './api/enhance';
 import ViewUI from 'view-design';
-import en from 'view-design/dist/locale/en-US';
-import zh from 'view-design/dist/locale/zh-CN';
+import en from './i18n/en';
+import zh from './i18n/zh';
+import ViewUIEn from 'view-design/dist/locale/en-US';
+import ViewUIZh from 'view-design/dist/locale/zh-CN';
+import VueCustomScrollbar from 'vue-custom-scrollbar';
 import 'view-design/dist/styles/iview.css';
+import 'vue-custom-scrollbar/dist/vueScrollbar.css';
 import './main.css';
 
 axios.interceptors.request.use(function (config) {
@@ -36,12 +40,13 @@ Vue.prototype.$http = axios;
 Vue.use(VueI18n);
 Vue.use(ViewUI);
 Vue.locale = () => { };
+Vue.component('vue-custom-scrollbar', VueCustomScrollbar);
 
 let i18n = new VueI18n({
   locale: 'zh',
   messages: {
-    en: Object.assign({ message: 'hello' }, en),
-    zh: Object.assign({ message: '你好' }, zh)
+    en: Object.assign(en, ViewUIEn),
+    zh: Object.assign(zh, ViewUIZh)
   }
 });
 
