@@ -31,6 +31,15 @@ var router = app => {
     path: [/^\/api\/common\/.+$/]
   }));
 
+  app.all('/*', async (req, res, next) => {
+    if (/^\/api\/common\/.+$/.test(req.url)) {
+      next();
+      return;
+    }
+    console.log(req.user);
+    next();
+  });
+
   let root = path.join(__dirname, 'routes');
   addRoutes(app, root, root);
 };

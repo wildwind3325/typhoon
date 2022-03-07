@@ -9,7 +9,7 @@
         <Input v-model="password" prefix="md-lock" type="password" placeholder="请输入密码" @on-enter="login" />
       </div>
       <div class="login-box-item">
-        <Button type="primary" :loading="busy_login" @click="login" long>登录</Button>
+        <Button type="primary" @click="login" long>登录</Button>
       </div>
     </div>
   </div>
@@ -21,13 +21,28 @@ export default {
   data() {
     return {
       account: '',
-      password: '',
-      busy_login: false
+      password: ''
     };
   },
   methods: {
-    login() {
-      this.$router.push('/home');
+    async login() {
+      if (!this.account || !this.password) {
+        this.$Message.error('请先输入账号和密码信息');
+        return;
+      }
+      try {
+        let res = await this.$http.post('/api/common/login', {
+          account: this.account,
+          password: this.password
+        });
+        if (!res.data.success) {
+          this.$Message.error('登录失败：' + res.data.message);
+          return;
+        }
+        this.$router.replace('/home');
+      } catch (err) {
+        this.$Message.error('登录失败：' + err.message);
+      }
     }
   }
 }
