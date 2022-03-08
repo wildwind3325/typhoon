@@ -4,6 +4,8 @@ var expressJwt = require('express-jwt');
 
 var config = require('./config');
 
+var exceptions = [/^\/api\/common\/.+$/];
+
 var addRoutes = (app, root, dir) => {
   let list = fs.readdirSync(dir, { withFileTypes: true });
   for (let i = 0; i < list.length; i++) {
@@ -28,15 +30,16 @@ var router = app => {
       done(null, false);
     }
   }).unless({
-    path: [/^\/api\/common\/.+$/]
+    path: exceptions
   }));
 
   app.all('/*', async (req, res, next) => {
-    if (/^\/api\/common\/.+$/.test(req.url)) {
-      next();
-      return;
+    for (let i = 0; i < exceptions.length; i++) {
+      if (exceptions[i].test(req.url)) {
+        next();
+        return;
+      }
     }
-    console.log(req.user);
     next();
   });
 

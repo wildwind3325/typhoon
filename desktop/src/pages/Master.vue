@@ -7,10 +7,9 @@
           <Submenu name="1">
             <template slot="title">
               <Icon type="ios-navigate"></Icon>
-              功能
+              系统管理
             </template>
-            <MenuItem name="c1">C1</MenuItem>
-            <MenuItem name="c2">C2</MenuItem>
+            <MenuItem name="menu">菜单管理</MenuItem>
           </Submenu>
         </Menu>
       </vue-custom-scrollbar>
@@ -38,14 +37,11 @@
           <TabPane v-for="(item, index) in tabs" :key="index" :label="item.lable" :icon="item.icon"
             :closable="index > 0">
             <vue-custom-scrollbar class="tab-content">
-              <component :is="comps[item.code]" :actived="index ===  activeTab">
+              <component :is="comps[item.code]" :actived="index === activeTab">
               </component>
             </vue-custom-scrollbar>
           </TabPane>
         </Tabs>
-      </div>
-      <div class="footer">
-        Copyright © 2022
       </div>
     </Content>
   </Layout>
@@ -70,7 +66,7 @@ export default {
     };
   },
   async mounted() {
-    await this.$http.post('/api/user/list');
+    await this.$http.post('/api/home/status');
   },
   methods: {
     selectMenu(name) {
@@ -98,9 +94,16 @@ export default {
       }
     },
     myAction(name) {
-      if (name === 'logout') {
-        cookie.set('token', '', -1);
-        this.$router.replace('/');
+      switch (name) {
+        case 'profile':
+          this.$Message.info('显示个人资料');
+          break;
+        case 'logout':
+          cookie.set('token', '', -1);
+          this.$router.replace('/');
+          break;
+        default:
+          break;
       }
     },
     closeTab(index) {
@@ -134,18 +137,11 @@ export default {
 }
 .body-content {
   width: 100%;
-  height: calc(100vh - 96px);
+  height: calc(100vh - 64px);
 }
 .tab-content {
   width: 100%;
-  height: calc(100vh - 144px);
+  height: calc(100vh - 112px);
   padding: 0px 10px 10px 10px;
-}
-.footer {
-  width: 100%;
-  height: 32px;
-  line-height: 32px;
-  padding-right: 10px;
-  text-align: right;
 }
 </style>

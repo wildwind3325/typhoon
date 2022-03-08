@@ -26,12 +26,14 @@ CREATE TABLE `base_auth_function` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `page_id` int(11) NOT NULL,
   `name` varchar(32) COLLATE utf8mb4_bin NOT NULL,
+  `code` varchar(256) COLLATE utf8mb4_bin NOT NULL,
   `route` varchar(512) COLLATE utf8mb4_bin NOT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_by` varchar(32) COLLATE utf8mb4_bin NOT NULL,
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `updated_by` varchar(32) COLLATE utf8mb4_bin NOT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `code_UNIQUE` (`code`),
   UNIQUE KEY `route_UNIQUE` (`route`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -55,13 +57,15 @@ DROP TABLE IF EXISTS `base_auth_module`;
 CREATE TABLE `base_auth_module` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(32) COLLATE utf8mb4_bin NOT NULL,
+  `code` varchar(64) COLLATE utf8mb4_bin NOT NULL,
   `order` int(11) NOT NULL,
   `icon` varchar(32) COLLATE utf8mb4_bin NOT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_by` varchar(32) COLLATE utf8mb4_bin NOT NULL,
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `updated_by` varchar(32) COLLATE utf8mb4_bin NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `code_UNIQUE` (`code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -85,7 +89,7 @@ CREATE TABLE `base_auth_page` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `module_id` int(11) NOT NULL,
   `name` varchar(32) COLLATE utf8mb4_bin NOT NULL,
-  `code` varchar(32) COLLATE utf8mb4_bin NOT NULL,
+  `code` varchar(128) COLLATE utf8mb4_bin NOT NULL,
   `route` varchar(128) COLLATE utf8mb4_bin NOT NULL,
   `order` int(11) NOT NULL,
   `icon` varchar(32) COLLATE utf8mb4_bin NOT NULL,
@@ -94,7 +98,8 @@ CREATE TABLE `base_auth_page` (
   `created_by` varchar(32) COLLATE utf8mb4_bin NOT NULL,
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `updated_by` varchar(32) COLLATE utf8mb4_bin NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `code_UNIQUE` (`code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -524,4 +529,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-03-07 19:20:44
+-- Dump completed on 2022-03-08 19:51:12
