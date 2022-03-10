@@ -27,7 +27,7 @@ axios.interceptors.response.use(function (response) {
   return response;
 }, function (error) {
   ViewUI.Spin.hide();
-  if (error.response && error.response.status === 401) {
+  if (error.response && error.response.status === 401 && router.currentRoute.path !== '/') {
     localStorage.setItem('target_uri', router.currentRoute.path);
     router.replace('/');
     return error.response;
