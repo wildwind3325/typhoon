@@ -4,6 +4,24 @@ var DB = require('../../data/db');
 
 var router = express.Router();
 
+router.post('/module/list', async function (req, res, next) {
+  try {
+    let db = new DB();
+    let modules = await db.find('select * from `base_auth_module`');
+    let pages = await db.find('select * from `base_auth_page`');
+    let func = await db.find('select * from `base_auth_function`');
+    res.send({
+      success: true,
+      list: list
+    });
+  } catch (err) {
+    res.send({
+      success: false,
+      exception: err.message
+    });
+  }
+});
+
 router.post('/module/create', async function (req, res, next) {
   try {
     let db = new DB();

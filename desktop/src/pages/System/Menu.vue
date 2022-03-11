@@ -2,7 +2,7 @@
   <div class="container">
     <div class="tree" style="padding: 0px 20px;">
       <vue-custom-scrollbar class="tree-area">
-        <Tree :data="treeData" @on-select-change="selectNode"></Tree>
+        <Tree ref="tree" :data="treeData" @on-select-change="selectNode"></Tree>
       </vue-custom-scrollbar>
     </div>
     <div class="content">
@@ -22,8 +22,10 @@
             <Input v-model="module.icon"></Input>
           </FormItem>
           <FormItem>
-            <Button type="primary" @click="moduleSave">新建模块</Button>
+            <Button type="primary" @click="moduleSave">{{ module.id > 0 ? '编辑模块' : '新建模块' }}</Button>
             <Button style="margin-left: 8px;" @click="moduleReset">重置</Button>
+            <Button v-show="module.id > 0" type="warning" style="margin-left: 8px;" @click="moduleDelete">删除</Button>
+            <Button v-show="module.id > 0" type="info" style="margin-left: 8px;" @click="pageNew">新建页面</Button>
           </FormItem>
         </Form>
         <Form v-show="mode === 1" ref="page" :model="page" :rules="pageRules" :label-width="80" @submit.native.prevent>
@@ -43,8 +45,9 @@
             <Input v-model="page.icon"></Input>
           </FormItem>
           <FormItem>
-            <Button type="primary" @click="pageSave">新建页面</Button>
+            <Button type="primary" @click="pageSave">{{ page.id > 0 ? '编辑页面' : '新建页面' }}</Button>
             <Button style="margin-left: 8px;" @click="pageReset">重置</Button>
+            <Button v-show="page.id > 0" type="warning" style="margin-left: 8px;" @click="pageDelete">删除</Button>
           </FormItem>
         </Form>
         <Form v-show="mode === 2" ref="func" :model="func" :rules="funcRules" :label-width="80" @submit.native.prevent>
@@ -58,8 +61,9 @@
             <Input v-model="func.route"></Input>
           </FormItem>
           <FormItem>
-            <Button type="primary" @click="funcSave">新建权限</Button>
+            <Button type="primary" @click="funcSave">{{ func.id > 0 ? '编辑权限' : '新建权限' }}</Button>
             <Button style="margin-left: 8px;" @click="funcReset">重置</Button>
+            <Button v-show="func.id > 0" type="warning" style="margin-left: 8px;" @click="funcDelete">删除</Button>
           </FormItem>
         </Form>
       </vue-custom-scrollbar>
@@ -81,6 +85,7 @@ export default {
         }]
       }],
       mode: 0,
+      currentNode: undefined,
       module: {
         id: 0,
         name: '',
@@ -126,12 +131,23 @@ export default {
   },
   methods: {
     selectNode(nodes, node) {
-      console.log(node.type);
+      this.currentNode = this.$refs.tree.getSelectedNodes()[0];
     },
     moduleSave() {
-      this.$refs.module.validate(valid => {
+      this.$refs.module.validate(async valid => {
         if (valid) {
-          this.$Message.success('表单验证成功');
+          try {
+            let action = 'create';
+            if (this.module.id !== 0) action = 'edit';
+            let res = await this.$http.post('/api/system/menu/module/' + action, this.module);
+            if (res.data.success) {
+              this.$Message.success('提交成功');
+            } else {
+              this.$Message.error('提交失败：' + res.data.message);
+            }
+          } catch (err) {
+            this.$Message.error('提交失败：' + err.message);
+          }
         } else {
           this.$Message.error('表单验证失败，请检查输入。');
         }
@@ -139,6 +155,11 @@ export default {
     },
     moduleReset() {
       this.$refs.module.resetFields();
+    },
+    moduleDelete() {
+    },
+    pageNew() {
+      this.mode = 1;
     },
     pageSave() {
       this.$refs.page.validate(valid => {
@@ -152,6 +173,8 @@ export default {
     pageReset() {
       this.$refs.page.resetFields();
     },
+    pageDelete() {
+    },
     funcSave() {
       this.$refs.func.validate(valid => {
         if (valid) {
@@ -163,6 +186,8 @@ export default {
     },
     funcReset() {
       this.$refs.func.resetFields();
+    },
+    funcDelete() {
     }
   }
 };
