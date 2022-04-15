@@ -73,4 +73,12 @@ app.use(function (err, req, res, next) {
   });
 });
 
+process.on('unhandledRejection', (error, promise) => {
+  console.error('unhandledRejection', error);
+});
+
+process.on('uncaughtException', (error, origin) => {
+  console.error('unhandledRejection', error);
+});
+
 module.exports = app;
