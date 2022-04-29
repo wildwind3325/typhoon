@@ -26,7 +26,7 @@ export default {
   },
   async mounted() {
     try {
-      let res = await this.$http.post('/api/home/status');
+      let res = await this.$http.post('/api/common/status');
       if (res.data.success) this.$router.replace('/home');
     } catch (err) { }
   },

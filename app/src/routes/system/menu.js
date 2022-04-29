@@ -12,13 +12,16 @@ router.post('/list', async function (req, res, next) {
     let funcs = await db.find('select * from `base_auth` where `type` = 2 order by `order` desc');
     for (let i = 0; i < modules.length; i++) {
       let module = modules[i];
+      module.title = module.name;
       module.children = [];
       for (let j = pages.length - 1; j >= 0; j--) {
         let page = pages[j];
         if (page.parent_id !== module.id) continue;
+        page.title = page.name;
         page.children = [];
         for (let k = funcs.length - 1; k >= 0; k--) {
           let func = funcs[k];
+          func.title = func.name;
           if (func.parent_id !== page.id) continue;
           page.children.push(func);
           funcs.splice(k, 1);
@@ -43,8 +46,8 @@ router.post('/create', async function (req, res, next) {
   try {
     let db = new DB();
     let item = Object.assign({
-      created_by: req.user.account,
-      updated_by: req.user.account
+      created_by: req.session.user.account,
+      updated_by: req.session.user.account
     }, req.body);
     await db.insert('base_auth', item);
     res.send({
@@ -62,7 +65,7 @@ router.post('/create', async function (req, res, next) {
 router.post('/edit', async function (req, res, next) {
   try {
     let db = new DB();
-    await db.update('base_auth', Object.assign({ updated_by: req.user.account }, req.body));
+    await db.update('base_auth', Object.assign({ updated_by: req.session.user.account }, req.body));
     res.send({ success: true });
   } catch (err) {
     res.send({

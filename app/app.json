@@ -12,7 +12,7 @@
   "error_file": "./logs/app-err.log",
   "out_file": "./logs/app-out.log",
   "env": {
-    "NODE_ENV": "qas",
+    "NODE_ENV": "PRD",
     "PORT": 8024
   }
 }

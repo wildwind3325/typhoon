@@ -24,21 +24,24 @@ axios.interceptors.request.use(function (config) {
 
 axios.interceptors.response.use(function (response) {
   ViewUI.Spin.hide();
+  if (!response.data.success && response.data.redirect) {
+    localStorage.setItem('target_uri', router.currentRoute.fullPath);
+    router.replace('/');
+  }
   return response;
 }, function (error) {
   ViewUI.Spin.hide();
-  if (error.response && error.response.status === 401 && router.currentRoute.path !== '/') {
-    localStorage.setItem('target_uri', router.currentRoute.path);
-    router.replace('/');
-    return error.response;
-  }
   return Promise.reject(error);
 });
 
 Vue.config.productionTip = false;
 Vue.prototype.$http = axios;
 Vue.use(VueI18n);
-Vue.use(ViewUI);
+Vue.use(ViewUI, {
+  i18n: function (path, options) {
+    return i18n.t(path, options);
+  }
+});
 Vue.locale = () => { };
 Vue.component('vue-custom-scrollbar', VueCustomScrollbar);
 

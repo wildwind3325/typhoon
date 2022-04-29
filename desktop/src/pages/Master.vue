@@ -66,7 +66,7 @@ export default {
     };
   },
   async mounted() {
-    await this.$http.post('/api/home/status');
+    await this.$http.post('/api/common/status');
   },
   methods: {
     selectMenu(name) {
@@ -93,13 +93,15 @@ export default {
         });
       }
     },
-    myAction(name) {
+    async myAction(name) {
       switch (name) {
         case 'profile':
           this.$Message.info('显示个人资料');
           break;
         case 'logout':
-          cookie.set('token', '', -1);
+          try {
+            await this.$http.post('/api/common/logout');
+          } catch (err) { }
           this.$router.replace('/');
           break;
         default:

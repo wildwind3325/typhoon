@@ -1,5 +1,4 @@
 var express = require('express');
-var jwt = require('jsonwebtoken');
 
 var config = require('../config');
 var DB = require('../data/db');
@@ -28,28 +27,29 @@ router.post('/login', async function (req, res, next) {
         success: false,
         message: '错误的用户名或密码'
       });
-      return;
+    } else {
+      req.session.user = rows[0];
+      res.send({ success: true });
     }
-    let token = jwt.sign({
-      in: rows[0].id,
-      account: rows[0].account,
-      code: rows[0].code,
-      name: rows[0].name,
-      gender: rows[0].gender,
-      email: rows[0].email,
-      mobile: rows[0].mobile
-    }, config.secret, { expiresIn: '24h' });
-    res.cookie('token', token, {
-      maxAge: 1000 * 3600 * 24
-    });
-    res.send({
-      success: true
-    });
   } catch (err) {
     res.send({
       success: false,
       message: err.message
     });
+  }
+});
+
+router.post('/logout', function (req, res, next) {
+  req.session.destroy(err => { });
+  res.clearCookie(config.cookie_name);
+  res.send({ success: true });
+});
+
+router.post('/status', function (req, res, next) {
+  if (req.session.user) {
+    res.send({ success: true });
+  } else {
+    res.send({ success: false });
   }
 });
 

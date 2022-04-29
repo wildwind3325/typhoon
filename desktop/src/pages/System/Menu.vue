@@ -1,52 +1,48 @@
 <template>
   <div class="container">
-    <div style="padding: 10px 20px;">
-      <Button type="primary" icon="ios-add-circle-outline" @click="create(0)">新建模块</Button>
-      <Button type="primary" icon="ios-add-circle-outline" style="margin-left: 8px;" @click="create(1)">新建菜单</Button>
-      <Button type="primary" icon="ios-add-circle-outline" style="margin-left: 8px;" @click="create(2)">新建功能</Button>
+    <div class="tree">
+      <vue-custom-scrollbar class="tree">
+        <Tree :data="items" style="padding: 0px 20px;" @on-select-change="selectNode"></Tree>
+      </vue-custom-scrollbar>
     </div>
-    <Table border highlight-row size="small" :height="height" row-key="id" :columns="columns" :data="items"
-      @on-current-change="setCurrent">
-      <template slot-scope="{ row, index }" slot="icon">
-        <Icon :type="row.icon" />
-      </template>
-      <template slot-scope="{ row, index }" slot="updated_at">
-        {{ new Date(row.updated_at).format('yyyy-MM-dd HH:mm:ss') }}
-      </template>
-      <template slot-scope="{ row, index }" slot="action">
-        <Button type="success" @click="edit(row)">编辑</Button>
-        <Button type="error" style="margin-left: 8px;" @click="remove(row, index)">删除</Button>
-      </template>
-    </Table>
-    <Modal v-model="showDialog" :mask-closable="false" :title="getTitle()">
-      <Form ref="form" :model="item" :rules="rules" :label-width="80" @submit.native.prevent>
-        <FormItem label="名称" prop="name">
-          <Input v-model="item.name"></Input>
-        </FormItem>
-        <FormItem label="代码" prop="code">
-          <Input v-model="item.code"></Input>
-        </FormItem>
-        <FormItem label="排序" prop="order">
-          <Input v-model.number="item.order" type="number"></Input>
-        </FormItem>
-        <FormItem label="图标" prop="icon">
-          <Input v-model="item.icon"></Input>
-        </FormItem>
-        <FormItem v-show="item.type === 1" label="前台路由">
-          <Input v-model="item.route_fe"></Input>
-        </FormItem>
-        <FormItem v-show="item.type === 2" label="后台路由">
-          <Input v-model="item.route_be"></Input>
-        </FormItem>
-        <FormItem label="是否可见">
-          <i-switch v-model="item.visible" :true-value="1" :false-value="0" />
-        </FormItem>
-      </Form>
-      <div slot="footer">
-        <Button type="primary" @click="save">保存</Button>
-        <Button style="margin-left: 8px;" @click="cancel">取消</Button>
+    <div class="content">
+      <div style="padding: 10px 20px;">
+        <Button type="primary" icon="ios-add-circle-outline" @click="create(0)">新建模块</Button>
+        <Button type="primary" icon="ios-add-circle-outline" style="margin-left: 8px;" @click="create(1)">新建菜单</Button>
+        <Button type="primary" icon="ios-add-circle-outline" style="margin-left: 8px;" @click="create(2)">新建功能</Button>
+        <Button type="error" icon="ios-remove" style="margin-left: 8px;" @click="remove">删除</Button>
       </div>
-    </Modal>
+      <vue-custom-scrollbar style="height: calc(100vh - 174px);">
+        <Form ref="form" :model="item" :rules="rules" :label-width="80" style="padding: 20px 20px 0px 20px;"
+          @submit.native.prevent>
+          <FormItem label="名称" prop="name">
+            <Input v-model="item.name"></Input>
+          </FormItem>
+          <FormItem label="代码" prop="code">
+            <Input v-model="item.code"></Input>
+          </FormItem>
+          <FormItem label="排序" prop="order">
+            <Input v-model.number="item.order" type="number"></Input>
+          </FormItem>
+          <FormItem label="图标" prop="icon">
+            <Input v-model="item.icon"></Input>
+          </FormItem>
+          <FormItem v-show="item.type === 1" label="前台路由">
+            <Input v-model="item.route_fe"></Input>
+          </FormItem>
+          <FormItem v-show="item.type === 2" label="后台路由">
+            <Input v-model="item.route_be"></Input>
+          </FormItem>
+          <FormItem label="是否可见">
+            <i-switch v-model="item.visible" :true-value="1" :false-value="0" />
+          </FormItem>
+          <FormItem>
+            <Button type="primary" @click="save">保存</Button>
+            <Button style="margin-left: 8px;" @click="cancel">取消</Button>
+          </FormItem>
+        </Form>
+      </vue-custom-scrollbar>
+    </div>
   </div>
 </template>
 
@@ -55,44 +51,8 @@ export default {
   name: 'Menu',
   data() {
     return {
-      height: 200,
-      columns: [{
-        title: '名称',
-        key: 'name',
-        tree: true,
-        width: 180,
-      }, {
-        title: '代码',
-        key: 'code'
-      }, {
-        title: '排序',
-        key: 'order',
-        width: '80',
-        align: 'center'
-      }, {
-        title: '图标',
-        slot: 'icon',
-        width: '80',
-        align: 'center'
-      }, {
-        title: '更新时间',
-        slot: 'updated_at',
-        width: '152',
-        align: 'center'
-      }, {
-        title: '更新人',
-        key: 'updated_by',
-        width: '120',
-        align: 'center'
-      }, {
-        title: '操作',
-        slot: 'action',
-        width: '180',
-        align: 'center'
-      }],
       items: [],
       currentItem: undefined,
-      showDialog: false,
       item: {
         id: 0,
         parent_id: 0,
@@ -113,41 +73,41 @@ export default {
     };
   },
   async mounted() {
-    window.onresize = () => {
-      this.fixSize();
-    };
-    this.fixSize();
     this.search();
   },
   methods: {
-    fixSize() {
-      this.height = Math.floor(document.body.getBoundingClientRect().height) - 174;
+    selectNode(nodes, node) {
+      if (nodes.length > 0) {
+        this.currentItem = nodes[0];
+        this.item = {
+          id: node.id,
+          parent_id: node.parent_id,
+          name: node.name,
+          code: node.code,
+          type: node.type,
+          order: node.order,
+          icon: node.icon,
+          route_fe: node.route_fe,
+          route_be: node.route_be,
+          visible: node.visible
+        };
+      } else {
+        this.currentItem = undefined;
+        this.clear();
+      }
     },
     async search() {
       try {
         let res = await this.$http.post('/api/system/menu/list');
         if (res.data.success) {
           this.items = res.data.data;
+          this.clear();
         } else {
           this.$Message.error('加载失败：' + res.data.message);
         }
       } catch (err) {
         this.$Message.error('加载失败：' + err.message);
       }
-    },
-    setCurrent(currentRow, oldCurrentRow) {
-      this.currentItem = currentRow;
-    },
-    getTitle() {
-      let title = this.item.id > 0 ? '编辑' : '新建';
-      if (this.item.type === 0) {
-        title += '模块';
-      } else if (this.item.type === 1) {
-        title += '菜单';
-      } else {
-        title += '功能';
-      }
-      return title;
     },
     create(type) {
       let parent_id = 0;
@@ -174,25 +134,10 @@ export default {
         route_be: '',
         visible: 1
       };
-      this.showDialog = true;
     },
-    edit(row) {
-      this.item = {
-        id: row.id,
-        parent_id: row.parent_id,
-        name: row.name,
-        code: row.code,
-        type: row.type,
-        order: row.order,
-        icon: row.icon,
-        route_fe: row.route_fe,
-        route_be: row.route_be,
-        visible: row.visible
-      };
-      this.showDialog = true;
-    },
-    remove(row, index) {
-      if (row.children.length > 0) {
+    remove() {
+      if (!this.currentItem) return;
+      if (this.currentItem.children && this.currentItem.children.length > 0) {
         this.$Message.error('该项目存在子集，不能删除。');
         return;
       }
@@ -201,9 +146,9 @@ export default {
         content: '确定要删除该项目吗？',
         onOk: async () => {
           try {
-            let res = await this.$http.post('/api/system/delete', { id: row.id });
+            let res = await this.$http.post('/api/system/menu/delete', { id: this.currentItem.id });
             if (res.data.success) {
-              this.items.splice(index, 1);
+              this.search();
               this.$Message.success('删除成功');
             } else {
               this.$Message.error('删除失败：' + res.data.message);
@@ -227,7 +172,24 @@ export default {
             let res = await this.$http.post('/api/system/menu/' + action, this.item);
             if (res.data.success) {
               await this.search();
-              this.showDialog = false;
+              // if (action === 'create') {
+              //   this.clear();
+              //   let ni = res.data.data;
+              //   ni.title = ni.name;
+              //   if (ni.parent_id === 0) {
+              //     this.items.push(ni);
+              //   } else {
+              //     this.currentItem.children.push(ni);
+              //   }
+              // } else {
+              //   this.currentItem.name = this.item.name;
+              //   this.currentItem.code = this.item.code;
+              //   this.currentItem.order = this.item.order;
+              //   this.currentItem.icon = this.item.icon;
+              //   this.currentItem.route_fe = this.item.route_fe;
+              //   this.currentItem.route_be = this.item.route_be;
+              //   this.currentItem.visible = this.item.visible;
+              // }
               this.$Message.success('提交成功');
             } else {
               this.$Message.error('提交失败：' + res.data.message);
@@ -241,8 +203,22 @@ export default {
       });
     },
     cancel() {
+      this.clear();
+    },
+    clear() {
+      this.item = {
+        id: 0,
+        parent_id: 0,
+        name: '',
+        code: '',
+        type: 0,
+        order: 1,
+        icon: '',
+        route_fe: '',
+        route_be: '',
+        visible: 1
+      };
       this.$refs.form.resetFields();
-      this.showDialog = false;
     }
   }
 };
@@ -250,6 +226,16 @@ export default {
 
 <style scoped>
 .container {
+  display: flex;
+}
+.tree {
+  width: 200px;
+  height: calc(100vh - 122px);
+  background-color: white;
+}
+.content {
+  margin-left: 10px;
+  width: calc(100% - 210px);
   height: calc(100vh - 122px);
   background-color: white;
 }
