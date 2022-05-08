@@ -6,6 +6,15 @@ body {
   margin: 0px;
 }
 
+.router-fade-enter-active {
+  transition: opacity 0.5s;
+}
+
+.router-fade-enter,
+.router-fade-leave-active {
+  opacity: 0;
+}
+
 .div-center {
   display: flex;
   justify-content: center;

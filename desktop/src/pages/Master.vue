@@ -48,7 +48,6 @@
 </template>
 
 <script>
-import cookie from '../api/cookie';
 import comps from './comps';
 export default {
   name: 'Master',

@@ -3,7 +3,7 @@ import App from './App';
 import VueI18n from 'vue-i18n';
 import router from './router';
 import axios from 'axios';
-import './api/enhance';
+import './util/enhance';
 import ViewUI from 'view-design';
 import en from './i18n/en';
 import zh from './i18n/zh';
@@ -37,12 +37,7 @@ axios.interceptors.response.use(function (response) {
 Vue.config.productionTip = false;
 Vue.prototype.$http = axios;
 Vue.use(VueI18n);
-Vue.use(ViewUI, {
-  i18n: function (path, options) {
-    return i18n.t(path, options);
-  }
-});
-Vue.locale = () => { };
+Vue.use(ViewUI, { i18n: (key, value) => i18n.t(key, value) });
 Vue.component('vue-custom-scrollbar', VueCustomScrollbar);
 
 let i18n = new VueI18n({
