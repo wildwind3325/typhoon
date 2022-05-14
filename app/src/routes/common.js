@@ -12,8 +12,8 @@ router.post('/login', async function (req, res, next) {
     let password = req.body.password;
     if (!account || !password) {
       res.send({
-        success: false,
-        message: '请输入账号和密码'
+        code: 1,
+        msg: '请输入账号和密码'
       });
       return;
     }
@@ -24,17 +24,17 @@ router.post('/login', async function (req, res, next) {
     });
     if (rows.length === 0) {
       res.send({
-        success: false,
-        message: '错误的用户名或密码'
+        code: 1,
+        msg: '错误的用户名或密码'
       });
     } else {
       req.session.user = rows[0];
-      res.send({ success: true });
+      res.send({ code: 0 });
     }
   } catch (err) {
     res.send({
-      success: false,
-      message: err.message
+      code: 1,
+      msg: err.message
     });
   }
 });
@@ -42,14 +42,14 @@ router.post('/login', async function (req, res, next) {
 router.post('/logout', function (req, res, next) {
   req.session.destroy(err => { });
   res.clearCookie(config.cookie_name);
-  res.send({ success: true });
+  res.send({ code: 0 });
 });
 
 router.post('/status', function (req, res, next) {
   if (req.session.user) {
-    res.send({ success: true });
+    res.send({ code: 0 });
   } else {
-    res.send({ success: false });
+    res.send({ code: -1 });
   }
 });
 

@@ -31,13 +31,13 @@ router.post('/list', async function (req, res, next) {
       }
     }
     res.send({
-      success: true,
+      code: 0,
       data: modules
     });
   } catch (err) {
     res.send({
-      success: false,
-      message: err.message
+      code: 1,
+      msg: err.message
     });
   }
 });
@@ -51,13 +51,13 @@ router.post('/create', async function (req, res, next) {
     }, req.body);
     await db.insert('base_auth', item);
     res.send({
-      success: true,
+      code: 0,
       data: item
     });
   } catch (err) {
     res.send({
-      success: false,
-      message: err.message
+      code: 1,
+      msg: err.message
     });
   }
 });
@@ -66,11 +66,11 @@ router.post('/edit', async function (req, res, next) {
   try {
     let db = new DB();
     await db.update('base_auth', Object.assign({ updated_by: req.session.user.account }, req.body));
-    res.send({ success: true });
+    res.send({ code: 0 });
   } catch (err) {
     res.send({
-      success: false,
-      message: err.message
+      code: 1,
+      msg: err.message
     });
   }
 });
@@ -83,17 +83,17 @@ router.post('/delete', async function (req, res, next) {
     });
     if (count[0].total > 0) {
       res.send({
-        success: false,
-        message: '该项目存在子集，不能删除。'
+        code: 1,
+        msg: '该项目存在子集，不能删除。'
       });
       return;
     }
     await db.delete('base_auth', { id: req.body.id });
-    res.send({ success: true });
+    res.send({ code: 0 });
   } catch (err) {
     res.send({
-      success: false,
-      message: err.message
+      code: 1,
+      msg: err.message
     });
   }
 });

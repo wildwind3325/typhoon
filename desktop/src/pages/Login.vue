@@ -27,7 +27,7 @@ export default {
   async mounted() {
     try {
       let res = await this.$http.post('/api/common/status');
-      if (res.data.success) this.$router.replace('/home');
+      if (res.data.code === 0) this.$router.replace('/home');
     } catch (err) { }
   },
   methods: {
@@ -41,8 +41,8 @@ export default {
           account: this.account,
           password: this.password
         });
-        if (!res.data.success) {
-          this.$Message.error('登录失败：' + res.data.message);
+        if (res.data.code !== 0) {
+          this.$Message.error('登录失败：' + res.data.msg);
           return;
         }
         this.$router.replace('/home');

@@ -64,9 +64,6 @@ export default {
       comps: comps
     };
   },
-  async mounted() {
-    await this.$http.post('/api/common/status');
-  },
   methods: {
     selectMenu(name) {
       for (let i = 0; i < this.tabs.length; i++) {

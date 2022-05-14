@@ -22,9 +22,8 @@ var router = app => {
     res.setHeader('X-Powered-By', config.copyright);
     if (!safeRoutes.test(req.url) && !req.session.user) {
       res.send({
-        success: false,
-        redirect: true,
-        message: '尚未登录或登录已超时'
+        code: -1,
+        msg: '尚未登录或登录已超时'
       });
     } else {
       next();

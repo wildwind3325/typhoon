@@ -1,0 +1,43 @@
+{
+  "appenders": {
+    "console": {
+      "type": "stdout"
+    },
+    "access": {
+      "type": "dateFile",
+      "filename": "logs/access.log",
+      "pattern": "-yyyy-MM-dd",
+      "keepFileExt": true,
+      "alwaysIncludePattern": true,
+      "numBackups": 14
+    },
+    "monitor": {
+      "type": "dateFile",
+      "filename": "logs/monitor.log",
+      "pattern": "-yyyy-MM-dd",
+      "keepFileExt": true,
+      "alwaysIncludePattern": true,
+      "numBackups": 14
+    }
+  },
+  "categories": {
+    "default": {
+      "appenders": [
+        "console"
+      ],
+      "level": "info"
+    },
+    "access": {
+      "appenders": [
+        "access"
+      ],
+      "level": "info"
+    },
+    "monitor": {
+      "appenders": [
+        "monitor"
+      ],
+      "level": "info"
+    }
+  }
+}

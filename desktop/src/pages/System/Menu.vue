@@ -99,11 +99,11 @@ export default {
     async search() {
       try {
         let res = await this.$http.post('/api/system/menu/list');
-        if (res.data.success) {
+        if (res.data.code === 0) {
           this.items = res.data.data;
           this.clear();
         } else {
-          this.$Message.error('加载失败：' + res.data.message);
+          this.$Message.error('加载失败：' + res.data.msg);
         }
       } catch (err) {
         this.$Message.error('加载失败：' + err.message);
@@ -147,11 +147,11 @@ export default {
         onOk: async () => {
           try {
             let res = await this.$http.post('/api/system/menu/delete', { id: this.currentItem.id });
-            if (res.data.success) {
+            if (res.data.code === 0) {
               this.search();
               this.$Message.success('删除成功');
             } else {
-              this.$Message.error('删除失败：' + res.data.message);
+              this.$Message.error('删除失败：' + res.data.msg);
             }
           } catch (err) {
             this.$Message.error('删除失败：' + err.message);
@@ -170,29 +170,11 @@ export default {
             let action = 'create';
             if (this.item.id !== 0) action = 'edit';
             let res = await this.$http.post('/api/system/menu/' + action, this.item);
-            if (res.data.success) {
+            if (res.data.code === 0) {
               await this.search();
-              // if (action === 'create') {
-              //   this.clear();
-              //   let ni = res.data.data;
-              //   ni.title = ni.name;
-              //   if (ni.parent_id === 0) {
-              //     this.items.push(ni);
-              //   } else {
-              //     this.currentItem.children.push(ni);
-              //   }
-              // } else {
-              //   this.currentItem.name = this.item.name;
-              //   this.currentItem.code = this.item.code;
-              //   this.currentItem.order = this.item.order;
-              //   this.currentItem.icon = this.item.icon;
-              //   this.currentItem.route_fe = this.item.route_fe;
-              //   this.currentItem.route_be = this.item.route_be;
-              //   this.currentItem.visible = this.item.visible;
-              // }
               this.$Message.success('提交成功');
             } else {
-              this.$Message.error('提交失败：' + res.data.message);
+              this.$Message.error('提交失败：' + res.data.msg);
             }
           } catch (err) {
             this.$Message.error('提交失败：' + err.message);
