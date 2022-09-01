@@ -40,8 +40,18 @@ Vue.use(VueI18n);
 Vue.use(ViewUI, { i18n: (key, value) => i18n.t(key, value) });
 Vue.component('vue-custom-scrollbar', VueCustomScrollbar);
 
+let locale = '';
+let lang = (navigator.language || navigator.browserLanguage).toLowerCase();
+if (lang.indexOf('zh') >= 0) {
+  locale = 'zh';
+} else {
+  locale = 'en';
+}
+locale = localStorage.getItem('lang') || locale;
+localStorage.setItem('lang', locale);
+
 let i18n = new VueI18n({
-  locale: 'zh',
+  locale: locale,
   messages: {
     en: Object.assign(en, ViewUIEn),
     zh: Object.assign(zh, ViewUIZh)

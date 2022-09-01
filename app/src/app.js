@@ -18,8 +18,8 @@ if (!process.env.NODE_ENV) {
   app.use(log4js.connectLogger(log4js.getLogger('access'), { level: 'info' }));
 }
 
-app.use(express.json({ limit: '100mb' }));
-app.use(express.urlencoded({ limit: '100mb', extended: false }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: false }));
 app.use(cookieParser());
 app.use(session({
   name: config.cookie_name,
@@ -28,7 +28,8 @@ app.use(session({
   rolling: true,
   saveUninitialized: false,
   cookie: {
-    maxAge: 1000 * 3600 * 24
+    maxAge: 1000 * 3600 * 24,
+    sameSite: 'lax'
   }
 }));
 app.use(express.static(path.join(__dirname, '../public')));
